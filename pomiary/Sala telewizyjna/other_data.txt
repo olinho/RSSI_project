@@ -1,0 +1,6 @@
+txPower = -77
+
+Bateria:
+gkvf=70
+nuyv=95
+Gt6e=99
