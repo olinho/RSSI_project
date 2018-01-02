@@ -3,7 +3,6 @@ package visualization;
 import exceptions.WorldBuilderException;
 import model.*;
 import model.Robot;
-import reader.DataReader;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,7 +12,6 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -27,11 +25,12 @@ public class Visualizer extends JFrame {
     double r1,r2,r3;
     World w;
     private double r1p,r2p,r3p;
+    Particle [] oldParticles;
 
 
     public Visualizer(World w) throws HeadlessException, IOException {
-        robotIcon = ImageIO.read(new File("robotIcon.png"));
         robotGhostIcon = ImageIO.read(new File("robotGhostIcon.png"));
+        robotIcon = ImageIO.read(new File("robotIcon.png"));
         towerIcon = ImageIO.read(new File("towerIcon.png"));
         this.w = w;
     }
@@ -53,11 +52,32 @@ public class Visualizer extends JFrame {
                 (int) w.getT3().getLocation().getY(), this);
     }
 
+    public void paintParticles(Graphics g){
+        double mult = 1;
+        if(oldParticles != null){
+            mult = oldParticles.length;
+            ((Graphics2D) g).setColor(this.getBackground());
+            for(int i = 0; i < oldParticles.length; i++){
+                g.fillRect((int)oldParticles[i].getLocation().getX(),(int)oldParticles[i].getLocation().getY(),1,1);
+
+            }
+        }
+        ((Graphics2D) g).setColor(Color.GREEN);
+        Particle[] p = w.getRobot().getMap().getParticles();
+        oldParticles = p;
+        
+        for(int i = 0; i < p.length; i++){
+            g.fillRect((int)p[i].getLocation().getX(),(int)p[i].getLocation().getY(),1,1);
+
+        }
+    }
+
     @Override
     public void paint(Graphics graphics) {
         paintRobot(graphics);
         paintTowers(graphics);
         paintBeams(graphics);
+        paintParticles(graphics);
     }
 
     private synchronized void paintBeams(Graphics graphics) {
@@ -116,20 +136,16 @@ public class Visualizer extends JFrame {
 
     public static void main(String [] argv){
         Visualizer dp = null;
-        
-        
-        
         try {
-        	DataReader reader = new DataReader();
-        	
             World world = new World.WorldBuilder()
                     .setHeight(600)
                     .setWidth(800)
-                    .setRobot(new Robot(new Location(4,5)))
-                    .setT1(new Tower(new Location(0,8),World.getA(), "gkfv", reader.getAllMeasurementForBeacon("gkfv")))
-                    .setT2(new Tower(new Location(8,8),World.getA(),"nuyV", reader.getAllMeasurementForBeacon("nuyV")))
-                    .setT3(new Tower(new Location(4,0),World.getA(),"Gt6e", reader.getAllMeasurementForBeacon("Gt6e")))
+                    .setRobot(new Robot(new Location(400,400)))
+                    .setT1(new Tower(new Location(10,10),100))
+                    .setT2(new Tower(new Location(750,150),100))
+                    .setT3(new Tower(new Location(100,500),100))
                     .build();
+            world.getRobot().setMap(new WorldMap(world));
             dp = new Visualizer(world);
 
             dp.setSize(world.getWidth(), world.getHeight());
@@ -144,6 +160,7 @@ public class Visualizer extends JFrame {
             });
 
             Visualizer finalDp = dp;
+            
             Thread painThread = new Thread(){
                 @Override
                 public void run() {
