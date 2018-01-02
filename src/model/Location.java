@@ -11,6 +11,11 @@ public class Location {
         this.y = y;
     }
 
+    public Location(Location location) {
+        this.x = location.x;
+        this.y = location.y;
+    }
+
     public double getX() {
         return x;
     }

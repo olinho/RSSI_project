@@ -1,14 +1,12 @@
 package model;
 
 import exceptions.WorldBuilderException;
-import reader.DataReader;
 
 /**
  * Created by sbk on 23.02.17.
  */
 public class World {
-    private static final double N = 1.3;
-    private static final int A = -77;
+    private static final double N = 2;
     private int height, width;
     private Robot robot;
     private Tower t1, t2,t3;
@@ -51,16 +49,11 @@ public class World {
         return t3;
     }
 
-	public static int getA() {
-		return A;
-	}
-
-
-	public static class WorldBuilder{
+    public static class WorldBuilder{
         private int height, width;
         private Robot robot;
         private Tower t1, t2,t3;
-        
+
         public WorldBuilder setHeight(int height) {
             this.height = height;
             return this;
@@ -104,7 +97,5 @@ public class World {
 
             return new World(this);
         }
-
-		
     }
 }
