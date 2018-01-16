@@ -18,7 +18,7 @@ import model.World;
  * Created by sbk on 23.02.17.
  */
 public class Simulator {
-    private static final double NOISE_RATIO = 0.1;
+    private static final double NOISE_RATIO = 0.2;
     private static final long SIMULATION_RATE= 500;
     private PrintWriter out = null;
 
@@ -53,7 +53,7 @@ public class Simulator {
        	
         r.resampleParticles();
         r.weightParticles(t1Beam, t2Beam, t3Beam);
-        Particle [] particles = v.oldParticles;
+        Particle [] particles = r.getMap().getParticles();
         double meanXFromParticleFiltering = 0.0;
         double meanYFromParticleFiltering = 0.0;
         for (Particle p : particles) {
@@ -66,8 +66,8 @@ public class Simulator {
         System.out.println("MeanRobotLocation: (" + (int)meanXFromParticleFiltering + ", " + (int)meanYFromParticleFiltering + ")");
 //        out.write("MeanRobotLocation: (" + (int)meanXFromParticleFiltering + ", " + (int)meanYFromParticleFiltering + ")");
 //        out.flush();
-//        robotLocation = new Location(meanXFromParticleFiltering, meanYFromParticleFiltering);
-//        r.setCalculatedLocation(robotLocation);
+        robotLocation = new Location(meanXFromParticleFiltering, meanYFromParticleFiltering);
+        r.setCalculatedLocation(robotLocation);
         
         v.repaint();
     }
